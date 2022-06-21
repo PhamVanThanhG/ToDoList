@@ -1,6 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import ToDayScreen from './app/screens/ToDayScreen';
+import * as React from 'react';
 import MainContainer from './app/MainContainer';
 
 export default function App() {
@@ -8,12 +6,3 @@ export default function App() {
     <MainContainer/>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
