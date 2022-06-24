@@ -12,7 +12,7 @@ const Tab = createBottomTabNavigator();
 const ToDoListBottomTab = () => {
     return (
         <Tab.Navigator
-            initialRouteName="ToDayScreen"
+            initialRouteName="To Day"
             screenOptions={{
                 tabBarActiveTintColor: '#e91e63',
             }}
@@ -28,10 +28,10 @@ const ToDoListBottomTab = () => {
                 }}
             />
             <Tab.Screen
-                name="ToDayScreen"
+                name="To Day"
                 component={ToDayScreen}
                 options={{
-                    tabBarLabel: 'ToDayScreen',
+                    tabBarLabel: 'To Day',
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="calendar-today" color={color} size={size} />
                     ),
@@ -52,8 +52,8 @@ const ToDoListBottomTab = () => {
 }
 export default MainContainer = () => {
     return (
-        <NavigationContainer>
-            <ToDoListBottomTab />
-        </NavigationContainer>
+            <NavigationContainer>
+                <ToDoListBottomTab />
+            </NavigationContainer>
     );
 }
