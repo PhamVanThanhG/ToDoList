@@ -1,49 +1,67 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const values = [
-    {
-        date: new Date("06/24/2022"),
-        tasks: [
-            {
-                id: 1,
-                priority: 3,
-                task: "Clean my room",
-                description: "It's difficulty",
-                done: false
-            },
-            {
-                id: 2,
-                priority: 1,
-                task: "Take a shower",
-                description: "No des",
-                done: true
-            }
-        ]
-    },
-    {
-        date: new Date("07/25/2022"),
-        tasks: [
-            {
-                id: 1,
-                priority: 1,
-                task: "To do list app",
-                description: "No des",
-                done: false
-            }
-        ]
+class ToDoTask {
+    constructor(id, dueDate, name, description, priority, done) {
+        this.id = id;
+        this.dueDate = dueDate;
+        this.name = name;
+        this.description = description;
+        this.priority = priority;
+        this.done = done;
     }
+}
+let task1 = new ToDoTask(1, new Date("06/25/2022"), "Clean my room", "No description", 3, false);
+let task2 = new ToDoTask(2, new Date("06/25/2022"), "Finish todolist app", "No description", 1, true);
+let task3 = new ToDoTask(3, new Date("06/29/2022"), "Clean my room", "No description", 3, false);
+const toDoList = [
+    task1, task2, task3
 ];
+// const values = [
+//     {
+//         date: new Date("06/24/2022"),
+//         tasks: [
+//             {
+//                 id: 1,
+//                 priority: 3,
+//                 task: "Clean my room",
+//                 description: "It's difficulty",
+//                 done: false
+//             },
+//             {
+//                 id: 2,
+//                 priority: 1,
+//                 task: "Take a shower",
+//                 description: "No des",
+//                 done: true
+//             }
+//         ]
+//     },
+//     {
+//         date: new Date("07/25/2022"),
+//         tasks: [
+//             {
+//                 id: 1,
+//                 priority: 1,
+//                 task: "To do list app",
+//                 description: "No des",
+//                 done: false
+//             }
+//         ]
+//     }
+// ];
+
 export const taskSlice = createSlice({
     name: 'task',
     initialState: {
-        value: values
+        value: toDoList
     },
     reducers: {
         setDone: (state, action) => {
             const d = new Date("06/24/2022");
             for (let index = 0; index < state.value.length; index++) {
                 const element = state.value[index];
-                if (element.date.getFullYear() === d.getFullYear() && element.date.getMonth() === d.getMonth() && element.date.getDate() === d.getDate()) {
+                const date = new Date(element.date);
+                if (date.getFullYear() === d.getFullYear() && date.getMonth() === d.getMonth() && date.getDate() === d.getDate()) {
                     element.tasks[0].done = !element.tasks[0].done;
                 }
             }
@@ -66,5 +84,6 @@ export const taskSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { setDone } = taskSlice.actions
+export const selectTask = state => state.task.value;
 
 export default taskSlice.reducer

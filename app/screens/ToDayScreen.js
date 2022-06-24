@@ -1,26 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { setDone } from '../redux/task';
+import { selectTask, setDone } from '../redux/task';
 import Task from '../components/Task';
 
 const ToDayScreen = () => {
-    const task = useSelector(state => state.task.value);
+    const task = useSelector(selectTask);
     const dispatch = useDispatch();
-    const [toDayTasks, setToDayTasks] = React.useState(null);
+    const [toDayTasks, setToDayTasks] = useState(new Array());
 
-    console.log(task);
-    // useEffect(() => {
-    //     var d = new Date();
-    //     task.forEach(element => {
-    //         if (element.date.getFullYear() === d.getFullYear() && element.date.getMonth() === d.getMonth() && element.date.getDate() === d.getDate()) {
-    //             setToDayTasks(element);
-    //             //console.warn(element);
-    //             //console.warn(element.date.getFullYear());
-    //         }
-    //     });
-    // })
+    useEffect(() => {
+        var d = new Date("06/25/2022");
+        // task.forEach(element => {
+        //     const date = new Date(element.dueDate);
+        //     if (date.getFullYear() === d.getFullYear() && date.getMonth() === d.getMonth() && date.getDate() === d.getDate()) {
+        //         setToDayTasks([...toDayTasks, element]);
+        //         //console.log(element);
+        //     }
+        // });
+        for (let index = 0; index < task.length; index++) {
+            const element = task[index];
+            const date = new Date(element.dueDate);
+            if (date.getFullYear() === d.getFullYear() && date.getMonth() === d.getMonth() && date.getDate() === d.getDate()) {
+                setToDayTasks(toDayTasks.push(element));
+                //console.log(element);
+            }
+        }
+        //console.log(toDayTasks);
+    })
+    console.log(toDayTasks.length);
+
+    //console.log(task);
     return (
         <View style={styles.container}>
             {
