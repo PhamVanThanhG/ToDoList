@@ -18,12 +18,22 @@ const ToDayScreen = () => {
     const task = useSelector(selectTask);
     const dispatch = useDispatch();
     const [modalVisible, setModalVisible] = useState(false);
-    // const [toDayTasks, setToDayTasks] = useState(null);
     var lastID = task.length != 0 ? task[task.length - 1].id + 1 : 1;
     const [isAddNew, setIsAddNew] = useState(true);
     const [itemSelected, setItemSelected] = useState(null);
-    const [totalTask, setTotalTask] = useState(0);
-    const [numberOfTaskDone, setNumberOfTaskDone] = useState(0);
+
+    var totalTask = 0;
+    var numberOfTaskDone = 0;
+    for (let index = 0; index < task.length; index++) {
+        const element = task[index];
+        const elDate = new Date(element.dueDate);
+        if (elDate.getFullYear() === today.getFullYear() && elDate.getMonth() === today.getMonth() && elDate.getDate() === today.getDate()) {
+            totalTask++;
+            if (element.done) {
+                numberOfTaskDone++;
+            }
+        }
+    }
     //Properties for chart
     const data = {
         data: [totalTask == 0 ? 0 : numberOfTaskDone / totalTask]
@@ -42,30 +52,6 @@ const ToDayScreen = () => {
         }
     };
     ///METHOD
-    const getDonePercentToDayTask = (task) => {
-        var total = 0;
-        var taskDone = 0;
-        for (let index = 0; index < task.length; index++) {
-            const element = task[index];
-            const elDate = new Date(element.dueDate);
-            if (elDate.getFullYear() === today.getFullYear() && elDate.getMonth() === today.getMonth() && elDate.getDate() === today.getDate()) {
-                total++;
-                if (element.done) {
-                    taskDone++;
-                }
-            }
-        }
-        setTotalTask(total);
-        setNumberOfTaskDone(taskDone);
-        // console.log(totalTask);
-        // console.log(numberOfTaskDone);
-        // if (totalTask == 0) {
-        //     setDonePer(0);
-        // } else {
-        //     setDonePer(numberOfTaskDone / totalTask);
-
-        // }
-    }
     const getToDayTasks = (tasks) => {
         var result = new Array();
         var d = new Date();
@@ -79,10 +65,10 @@ const ToDayScreen = () => {
         return result;
     }
 
-    useEffect(() => {
-        getDonePercentToDayTask(task, false, false);
-        //console.log(task);
-    }, []);
+    // useEffect(() => {
+    //     getDonePercentToDayTask(task, false, false);
+    //     //console.log(task);
+    // }, []);
     const close = () => {
         setModalVisible(false);
     }
@@ -123,11 +109,9 @@ const ToDayScreen = () => {
                     </View>
                     <AddEditTask type={isAddNew ? "add" : "edit"} item={isAddNew ? lastID : itemSelected} closeModal={close}
                         add={() => {
-                            //getDonePercentToDayTask(task, false, false);
                             setTotalTask(totalTask + 1);
                         }}
                     />
-                    {/* {useBreathActive ? (text ? <GuideToUseBreathText /> : <GuideToUseBreathVideo />) : (text ? <GuideToUseMantraText /> : <GuideToUseMantraVideo />)} */}
                 </View>
             </Modal>
             <ImageBackground source={require('../../assets/todaybg.jpg')} style={styles.bgToDay}>
@@ -173,16 +157,6 @@ const ToDayScreen = () => {
                 renderItem={({ item }) => {
                     const date = new Date(item.dueDate);
                     if (date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate()) {
-                        // const setDoneTask = () => {
-                        //     dispatch(setDone(item.id));
-                        //     // getDonePercentToDayTask(task, true, item.done ? false : true);
-                        // }
-                        // const del = () => {
-                        //     dispatch(deleteTask(item.id))
-                        // }
-                        // const resetDonePer = (task) => {
-                        //     getDonePercentToDayTask(task, false, false);
-                        // }
                         const edit = () => {
                             setIsAddNew(false);
                             setItemSelected(item);
