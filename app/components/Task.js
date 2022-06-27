@@ -50,7 +50,6 @@ const Task = ({ item, editItem, done, setDoneFunc }) => {
                     <Text style={{ ...styles.task, textDecorationLine: done ? "line-through" : "none" }}>{item.name}</Text>
                     <Text>Priority: {priorityDescriptionValues[item.priority - 1]}</Text>
                     <Text>Due date: {date.toDateString("en-US")}</Text>
-                    <Text>{item.id}</Text>
                     <Text style={styles.description}>Description: {item.description.length == 0 ? "No description" : item.description}</Text>
                 </View>
                 <View style={styles.editdelete}>
