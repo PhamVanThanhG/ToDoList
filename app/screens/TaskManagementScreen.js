@@ -12,14 +12,14 @@ import ToDoTask from '../components/ToDoTask';
 import { priorityDescriptionValues } from '../constants/priority';
 import { ProgressChart } from 'react-native-chart-kit';
 
-const ToDayScreen = () => {
+const TaskManagementScreen = () => {
     ///PROPERTIES
     var today = new Date();
     const task = useSelector(selectTask);
     const dispatch = useDispatch();
     const [modalVisible, setModalVisible] = useState(false);
     // const [toDayTasks, setToDayTasks] = useState(null);
-    var lastID = task.length != 0 ? task[task.length - 1].id + 1 : 1;
+    var lastID = task.length != 0 ? task.length + 1 : 1;
     const [isAddNew, setIsAddNew] = useState(true);
     const [itemSelected, setItemSelected] = useState(null);
     const [totalTask, setTotalTask] = useState(0);
@@ -48,11 +48,9 @@ const ToDayScreen = () => {
         for (let index = 0; index < task.length; index++) {
             const element = task[index];
             const elDate = new Date(element.dueDate);
-            if (elDate.getFullYear() === today.getFullYear() && elDate.getMonth() === today.getMonth() && elDate.getDate() === today.getDate()) {
-                total++;
-                if (element.done) {
-                    taskDone++;
-                }
+            total++;
+            if (element.done) {
+                taskDone++;
             }
         }
         setTotalTask(total);
@@ -86,7 +84,6 @@ const ToDayScreen = () => {
     const close = () => {
         setModalVisible(false);
     }
-    console.log("hello");
     return (
         <View style={styles.container}>
             <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -134,36 +131,8 @@ const ToDayScreen = () => {
                 <View style={styles.headerView}>
                     <View style={{ flex: 3, alignItems: "center" }}>
                         <View style={{ ...styles.titleView, justifyContent: "center" }}>
-                            <Text style={styles.title}>TODAY</Text>
-                            <Text style={styles.title}>TASKS</Text>
+                            <Text style={styles.title}>TASK MANAGEMENT</Text>
                         </View>
-                        <Text style={styles.today}>{today.toDateString("en-US")}</Text>
-                    </View>
-                    {/* <View style={{ flex: 5, justifyContent: "space-evenly" }}>
-                        <View>
-                            <Text style={{ fontSize: 20, color: "white" }}>20</Text>
-                            <Text style={styles.statisticalTask}>{priorityDescriptionValues[0]}</Text>
-                        </View>
-                        <View>
-                            <Text style={{ fontSize: 20, color: "white" }}>20</Text>
-                            <Text style={styles.statisticalTask}>{priorityDescriptionValues[1]}</Text>
-                        </View>
-                        <View>
-                            <Text style={{ fontSize: 20, color: "white" }}>20</Text>
-                            <Text style={styles.statisticalTask}>{priorityDescriptionValues[2]}</Text>
-                        </View>
-                    </View> */}
-                    <View style={{ flex: 5 }}>
-                        <ProgressChart
-                            data={data}
-                            width={SIZES.androidWidth.window * 0.71}
-                            height={SIZES.androidHeightWithStatusBar.window * 0.23}
-                            strokeWidth={14}
-                            radius={50}
-                            chartConfig={chartConfig}
-                            hideLegend={true}
-                        />
-                        <Text style={{ color: "#40ff00", alignSelf: "center" }}>{((totalTask == 0 ? 0 : (numberOfTaskDone / totalTask)) * 100).toFixed(2)}% done</Text>
                     </View>
                 </View>
             </ImageBackground>
@@ -171,40 +140,37 @@ const ToDayScreen = () => {
                 keyExtractor={(item) => item.name}
                 data={task}
                 renderItem={({ item }) => {
-                    const date = new Date(item.dueDate);
-                    if (date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate()) {
-                        // const setDoneTask = () => {
-                        //     dispatch(setDone(item.id));
-                        //     // getDonePercentToDayTask(task, true, item.done ? false : true);
-                        // }
-                        // const del = () => {
-                        //     dispatch(deleteTask(item.id))
-                        // }
-                        // const resetDonePer = (task) => {
-                        //     getDonePercentToDayTask(task, false, false);
-                        // }
-                        const edit = () => {
-                            setIsAddNew(false);
-                            setItemSelected(item);
-                            setModalVisible(true);
-                        }
-                        return (
-                            <Task item={item}
-                                done={item.done}
-                                editItem={edit}
-                                resetNumberOfTaskDoneBySetDone={(value) => {
-                                    setNumberOfTaskDone(numberOfTaskDone + value);
-                                }}
-                                resetNumberOfTaskDoneByDel={(isDone) => {
-                                    setTotalTask(totalTask - 1);
-                                    if (isDone) {
-                                        setNumberOfTaskDone(numberOfTaskDone - 1);
-                                    }
-                                }}
-                            // deleteTask={del} 
-                            />
-                        );
+                    // const setDoneTask = () => {
+                    //     dispatch(setDone(item.id));
+                    //     // getDonePercentToDayTask(task, true, item.done ? false : true);
+                    // }
+                    // const del = () => {
+                    //     dispatch(deleteTask(item.id))
+                    // }
+                    // const resetDonePer = (task) => {
+                    //     getDonePercentToDayTask(task, false, false);
+                    // }
+                    const edit = () => {
+                        setIsAddNew(false);
+                        setItemSelected(item);
+                        setModalVisible(true);
                     }
+                    return (
+                        <Task item={item}
+                            done={item.done}
+                            editItem={edit}
+                            resetNumberOfTaskDoneBySetDone={(value) => {
+                                setNumberOfTaskDone(numberOfTaskDone + value);
+                            }}
+                            resetNumberOfTaskDoneByDel={(isDone) => {
+                                setTotalTask(totalTask - 1);
+                                if (isDone) {
+                                    setNumberOfTaskDone(numberOfTaskDone - 1);
+                                }
+                            }}
+                        // deleteTask={del} 
+                        />
+                    );
                 }}
             />
             <StatusBar
@@ -256,7 +222,7 @@ const styles = StyleSheet.create({
     },
     bgToDay: {
         width: SIZES.androidWidth.window,
-        height: SIZES.androidHeightWithStatusBar.window * 0.26
+        height: SIZES.androidHeightWithStatusBar.window * 0.07
     },
     headerView: {
         flexDirection: "row",
@@ -265,7 +231,8 @@ const styles = StyleSheet.create({
     },
     title: {
         color: "white",
-        fontSize: 30
+        fontSize: 30,
+        fontWeight: "bold"
     },
     today: {
         color: "white"
@@ -278,4 +245,4 @@ const styles = StyleSheet.create({
         color: "white"
     }
 });
-export default ToDayScreen;
+export default TaskManagementScreen;

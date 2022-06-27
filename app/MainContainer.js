@@ -6,13 +6,14 @@ import { MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import ToDayScreen from './screens/ToDayScreen';
 import CalendarScreen from './screens/CalendarScreen';
 import UserScreen from './screens/UserScreen';
+import TaskManagementScreen from './screens/TaskManagementScreen';
 
 const Tab = createBottomTabNavigator();
 
 const ToDoListBottomTab = () => {
     return (
         <Tab.Navigator
-            initialRouteName="To Day"
+            initialRouteName="ToDay"
             screenOptions={{
                 tabBarActiveTintColor: '#e91e63',
             }}
@@ -28,13 +29,25 @@ const ToDoListBottomTab = () => {
                 }}
             />
             <Tab.Screen
-                name="To Day"
+                name="TaskManagement"
+                component={TaskManagementScreen}
+                options={{
+                    tabBarLabel: 'AllTasks',
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialCommunityIcons name="account" color={color} size={size} />
+                    ),
+                    headerShown: false
+                }}
+            />
+            <Tab.Screen
+                name="ToDay"
                 component={ToDayScreen}
                 options={{
-                    tabBarLabel: 'To Day',
+                    tabBarLabel: 'ToDay',
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="calendar-today" color={color} size={size} />
                     ),
+                    headerShown: false
                 }}
             />
             <Tab.Screen
@@ -52,8 +65,8 @@ const ToDoListBottomTab = () => {
 }
 export default MainContainer = () => {
     return (
-            <NavigationContainer>
-                <ToDoListBottomTab />
-            </NavigationContainer>
+        <NavigationContainer>
+            <ToDoListBottomTab />
+        </NavigationContainer>
     );
 }

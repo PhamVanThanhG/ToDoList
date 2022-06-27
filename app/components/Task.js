@@ -1,10 +1,15 @@
-import * as React from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { priorityDescriptionValues } from '../constants/priority';
+import { useDispatch } from 'react-redux';
+import { deleteTask, setDone } from '../redux/task';
 
-const Task = ({ item, setDoneTask, deleteTask }) => {
+const Task = ({ item, editItem, resetNumberOfTaskDoneBySetDone, resetNumberOfTaskDoneByDel, done }) => {
+    const [doneT, setDoneT] = useState(item.done);
+    const dispatch = useDispatch();
     var priorityColor = "";
-
+    const date = new Date(item.dueDate);
     switch (item.priority) {
         case 1:
             priorityColor = "red"
@@ -18,22 +23,39 @@ const Task = ({ item, setDoneTask, deleteTask }) => {
         default:
             break;
     }
+    const setDoneTask = () => {
+        dispatch(setDone(item.id))
+    }
+    const del = () => {
+        resetNumberOfTaskDoneByDel(doneT);
+        dispatch(deleteTask(item.id));
+    }
     return (
-        <View style={{ ...styles.container, borderRightColor: priorityColor }}>
+        <View style={{ ...styles.container, borderRightColor: priorityColor, backgroundColor: done ? "#d0d0d0": "white" }}>
             <View style={styles.check} >
                 <TouchableOpacity
-                    onPress={setDoneTask}
+                    onPress={() => {
+                        setDoneTask();
+                        resetNumberOfTaskDoneBySetDone(doneT ? -1 : 1);
+                        setDoneT(!doneT);
+                    }}
+                    
                 >
-                    <AntDesign name={item.done ? "checkcircle" : "checkcircleo"} color="#49e2ed" size={30} />
+                    <AntDesign name={done ? "checkcircle" : "checkcircleo"} color="#00484d" size={30} />
                 </TouchableOpacity>
             </View>
             <View style={styles.content}>
                 <View style={styles.viewtext}>
-                    <Text style={{ ...styles.task, textDecorationLine: item.done ? "line-through" : "none" }}>{item.task}</Text>
-                    <Text style={styles.description}>{item.description}</Text>
+                    <Text style={{ ...styles.task, textDecorationLine: done ? "line-through" : "none" }}>{item.name}</Text>
+                    <Text>Priority: {priorityDescriptionValues[item.priority - 1]}</Text>
+                    <Text>Due date: {date.toDateString("en-US")}</Text>
+                    <Text style={styles.description}>Description: {item.description.length == 0 ? "No description" : item.description}</Text>
                 </View>
-                <View style={styles.delete}>
-                    <TouchableOpacity onPress={deleteTask}>
+                <View style={styles.editdelete}>
+                    <TouchableOpacity onPress={editItem}>
+                        <AntDesign name="edit" color="blue" size={35}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={del}>
                         <MaterialCommunityIcons name="delete" color="red" size={35} />
                     </TouchableOpacity>
                 </View>
@@ -46,7 +68,8 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
         borderRightWidth: 8,
-        marginVertical: 10,
+        marginBottom: 10,
+        paddingLeft: 15
     },
     check: {
         flex: 1,
@@ -62,9 +85,8 @@ const styles = StyleSheet.create({
     viewtext: {
         flex: 8
     },
-    delete: {
-        flex: 1,
-        alignSelf: "center"
+    editdelete: {
+        justifyContent: "space-around"
     },
     task: {
         fontWeight: "bold",

@@ -57,12 +57,51 @@ export const taskSlice = createSlice({
     },
     reducers: {
         setDone: (state, action) => {
-            const d = new Date("06/24/2022");
+            //const d = new Date("06/24/2022");
+            // for (let index = 0; index < state.value.length; index++) {
+            //     const element = state.value[index];
+            //     const date = new Date(element.date);
+            //     if (date.getFullYear() === d.getFullYear() && date.getMonth() === d.getMonth() && date.getDate() === d.getDate()) {
+            //         element.tasks[0].done = !element.tasks[0].done;
+            //     }
+            // }
             for (let index = 0; index < state.value.length; index++) {
                 const element = state.value[index];
-                const date = new Date(element.date);
-                if (date.getFullYear() === d.getFullYear() && date.getMonth() === d.getMonth() && date.getDate() === d.getDate()) {
-                    element.tasks[0].done = !element.tasks[0].done;
+                if (element.id == action.payload) {
+                    var done = element.done;
+                    element.done = !done;
+                    break;
+                }
+            }
+        },
+        sortByPriority: (state, action) => {
+            state.value.sort(function (a, b) { return a.priority - b.priority })
+        },
+        addNewTask: (state, action) => {
+            state.value.push(action.payload);
+            state.value.sort(function (a, b) { return a.priority - b.priority })
+        },
+        deleteTask: (state, action) => {
+            for (let index = 0; index < state.value.length; index++) {
+                const element = state.value[index];
+                if (element.id == action.payload) {
+                    state.value.splice(index, 1);
+                    break;
+                }
+            }
+            //state.value.pop();
+            //state.value.splice(0,state.value.length);
+        },
+        editTask: (state, action) =>{
+            item = action.payload;
+            for (let index = 0; index < state.value.length; index++) {
+                const element = state.value[index];
+                if (element.id == item.id) {
+                    element.name = item.name;
+                    element.description = item.description;
+                    element.priority = item.priority;
+                    element.dueDate = item.dueDate;
+                    break;
                 }
             }
         }
@@ -83,7 +122,7 @@ export const taskSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setDone } = taskSlice.actions
+export const { setDone, sortByPriority, addNewTask, deleteTask, editTask } = taskSlice.actions
 export const selectTask = state => state.task.value;
 
 export default taskSlice.reducer
