@@ -1,7 +1,7 @@
 import { Text, StyleSheet, View, TextInput, Button, Platform, TouchableOpacity } from 'react-native'
 import { SIZES } from '../constants/data';
 import React, { useState, useRef } from 'react';
-import { FontAwesome, MaterialIcons, Fontisto } from '@expo/vector-icons';
+import { FontAwesome, MaterialIcons, Fontisto, Ionicons, AntDesign } from '@expo/vector-icons';
 import { priorityDescriptionValues } from '../constants/priority';
 import ModalDropdown from 'react-native-modal-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import task, { addNewTask, editTask } from '../redux/task';
 import ToDoTask from './ToDoTask';
 
-const AddEditTask = ({ type, item, closeModal, add }) => {
+const AddEditTask = ({ type, item, closeModal }) => {
     ///PROPERTIES
     var isAdd = type == "add" ? true : false;
     var id = item;
@@ -17,6 +17,7 @@ const AddEditTask = ({ type, item, closeModal, add }) => {
     const [name, setName] = useState(isAdd ? "" : item.name);
     const [description, setDescription] = useState(isAdd ? "" : item.description);
     const [priority, setPriority] = useState(isAdd ? "" : item.priority);
+    const [done, setDone] = useState(isAdd ? false : (item.done ? true : false))
     const [date, setDate] = useState(isAdd ? new Date() : new Date(item.dueDate));
     const [show, setShow] = useState(false);
     const nameTextInput = useRef(null);
@@ -39,17 +40,16 @@ const AddEditTask = ({ type, item, closeModal, add }) => {
             return;
         }
         if (isAdd) {
-            var newTask = new ToDoTask(id, date, name, description, priority, false);
+            var newTask = new ToDoTask(id, date, name, description, priority, done);
             dispatch(addNewTask(newTask));
             setName("");
             setDescription("");
             setDate(new Date());
             id++;
-            add();
             alert("Add new task successfully!");
         } else {
             closeModal();
-            var taskToEdit = new ToDoTask(item.id, date, name, description, priority, item.done);
+            var taskToEdit = new ToDoTask(item.id, date, name, description, priority, done);
             //console.log(taskToEdit);
             dispatch(editTask(taskToEdit));
             alert("Edit task successfully!");
@@ -131,6 +131,23 @@ const AddEditTask = ({ type, item, closeModal, add }) => {
                     onChange={onChange}
                 />
             )}
+            <View style={{
+                flexDirection: 'row',
+                marginTop: 10,
+                paddingBottom: 5
+            }}>
+                <TouchableOpacity onPress={() => setDone(!done)}>
+                    <AntDesign name={done ? "checkcircle" : "checkcircleo"} color="#00484d" size={30} />
+                </TouchableOpacity>
+                <Text
+                    style={{
+                        flex: 1,
+                        paddingLeft: 10,
+                        color: 'white',
+                        fontSize: 18
+                    }}
+                >{done ? "done" : "undone"}</Text>
+            </View>
             <TouchableOpacity
                 onPress={addTask}
                 style={[styles.signIn, {

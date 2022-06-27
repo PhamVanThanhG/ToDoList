@@ -3,10 +3,10 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { priorityDescriptionValues } from '../constants/priority';
 import { useDispatch } from 'react-redux';
-import { deleteTask, setDone } from '../redux/task';
+import { deleteTask, setDone, editTask } from '../redux/task';
 
-const Task = ({ item, editItem, resetNumberOfTaskDoneBySetDone, resetNumberOfTaskDoneByDel, done }) => {
-    const [doneT, setDoneT] = useState(item.done);
+const Task = ({ item, editItem, done, setDoneFunc }) => {
+    const [doneT, setDoneT] = useState(done);
     const dispatch = useDispatch();
     var priorityColor = "";
     const date = new Date(item.dueDate);
@@ -27,17 +27,18 @@ const Task = ({ item, editItem, resetNumberOfTaskDoneBySetDone, resetNumberOfTas
         dispatch(setDone(item.id))
     }
     const del = () => {
-        resetNumberOfTaskDoneByDel(doneT);
         dispatch(deleteTask(item.id));
+        alert("Delete task successfully!");
     }
     return (
         <View style={{ ...styles.container, borderRightColor: priorityColor, backgroundColor: done ? "#d0d0d0": "white" }}>
             <View style={styles.check} >
                 <TouchableOpacity
                     onPress={() => {
-                        setDoneTask();
-                        resetNumberOfTaskDoneBySetDone(doneT ? -1 : 1);
-                        setDoneT(!doneT);
+                        //console.log(item.id)
+                        //dispatch(setDone(item.id));
+                        // setDoneT(!doneT);
+                        //setDoneFunc();
                     }}
                     
                 >
@@ -49,6 +50,7 @@ const Task = ({ item, editItem, resetNumberOfTaskDoneBySetDone, resetNumberOfTas
                     <Text style={{ ...styles.task, textDecorationLine: done ? "line-through" : "none" }}>{item.name}</Text>
                     <Text>Priority: {priorityDescriptionValues[item.priority - 1]}</Text>
                     <Text>Due date: {date.toDateString("en-US")}</Text>
+                    <Text>{item.id}</Text>
                     <Text style={styles.description}>Description: {item.description.length == 0 ? "No description" : item.description}</Text>
                 </View>
                 <View style={styles.editdelete}>

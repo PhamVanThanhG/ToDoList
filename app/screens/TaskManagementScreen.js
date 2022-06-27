@@ -22,48 +22,7 @@ const TaskManagementScreen = () => {
     var lastID = task.length != 0 ? task.length + 1 : 1;
     const [isAddNew, setIsAddNew] = useState(true);
     const [itemSelected, setItemSelected] = useState(null);
-    const [totalTask, setTotalTask] = useState(0);
-    const [numberOfTaskDone, setNumberOfTaskDone] = useState(0);
-    //Properties for chart
-    const data = {
-        data: [totalTask == 0 ? 0 : numberOfTaskDone / totalTask]
-    };
-    const chartConfig = {
-        backgroundGradientFrom: "#ffffff",
-        backgroundGradientFromOpacity: 0,
-        backgroundGradientTo: "#ffffff",
-        backgroundGradientToOpacity: 0,
-        color: (opacity = 1) => `rgba(64, 255, 0, ${opacity})`,
-        strokeWidth: 2, // optional, default 3
-        barPercentage: 0.5,
-        useShadowColorFromDataset: false, // optional
-        propsForLabels: {
-            fontSize: 0
-        }
-    };
-    ///METHOD
-    const getDonePercentToDayTask = (task) => {
-        var total = 0;
-        var taskDone = 0;
-        for (let index = 0; index < task.length; index++) {
-            const element = task[index];
-            const elDate = new Date(element.dueDate);
-            total++;
-            if (element.done) {
-                taskDone++;
-            }
-        }
-        setTotalTask(total);
-        setNumberOfTaskDone(taskDone);
-        // console.log(totalTask);
-        // console.log(numberOfTaskDone);
-        // if (totalTask == 0) {
-        //     setDonePer(0);
-        // } else {
-        //     setDonePer(numberOfTaskDone / totalTask);
 
-        // }
-    }
     const getToDayTasks = (tasks) => {
         var result = new Array();
         var d = new Date();
@@ -77,10 +36,6 @@ const TaskManagementScreen = () => {
         return result;
     }
 
-    useEffect(() => {
-        getDonePercentToDayTask(task, false, false);
-        //console.log(task);
-    }, []);
     const close = () => {
         setModalVisible(false);
     }
@@ -119,10 +74,6 @@ const TaskManagementScreen = () => {
                         </TouchableOpacity>
                     </View>
                     <AddEditTask type={isAddNew ? "add" : "edit"} item={isAddNew ? lastID : itemSelected} closeModal={close}
-                        add={() => {
-                            //getDonePercentToDayTask(task, false, false);
-                            setTotalTask(totalTask + 1);
-                        }}
                     />
                     {/* {useBreathActive ? (text ? <GuideToUseBreathText /> : <GuideToUseBreathVideo />) : (text ? <GuideToUseMantraText /> : <GuideToUseMantraVideo />)} */}
                 </View>
@@ -137,7 +88,7 @@ const TaskManagementScreen = () => {
                 </View>
             </ImageBackground>
             <FlatList
-                keyExtractor={(item) => item.name}
+                keyExtractor={(item) => item.id}
                 data={task}
                 renderItem={({ item }) => {
                     // const setDoneTask = () => {
@@ -155,19 +106,23 @@ const TaskManagementScreen = () => {
                         setItemSelected(item);
                         setModalVisible(true);
                     }
+                    const setDoneTask = () => {
+                        dispatch(editTask(item))
+                    }
                     return (
                         <Task item={item}
                             done={item.done}
                             editItem={edit}
-                            resetNumberOfTaskDoneBySetDone={(value) => {
-                                setNumberOfTaskDone(numberOfTaskDone + value);
-                            }}
-                            resetNumberOfTaskDoneByDel={(isDone) => {
-                                setTotalTask(totalTask - 1);
-                                if (isDone) {
-                                    setNumberOfTaskDone(numberOfTaskDone - 1);
-                                }
-                            }}
+                            setDoneFunc={setDoneTask}
+                            // resetNumberOfTaskDoneBySetDone={(value) => {
+                            //     setNumberOfTaskDone(numberOfTaskDone + value);
+                            // }}
+                            // resetNumberOfTaskDoneByDel={(isDone) => {
+                            //     setTotalTask(totalTask - 1);
+                            //     if (isDone) {
+                            //         setNumberOfTaskDone(numberOfTaskDone - 1);
+                            //     }
+                            // }}
                         // deleteTask={del} 
                         />
                     );
@@ -176,7 +131,6 @@ const TaskManagementScreen = () => {
             <StatusBar
                 style="light"
                 backgroundColor='#011020'
-                bar
             />
             <TouchableOpacity style={styles.add} onPress={() => {
                 setIsAddNew(true);

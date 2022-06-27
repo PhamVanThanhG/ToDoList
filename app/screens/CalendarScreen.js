@@ -100,6 +100,7 @@ const CalendarScreen = () => {
                 renderItem={renderItem}
             />
             <StatusBar style="auto" /> */}
+            <StatusBar style="dark" backgroundColor='white'/>
         </View>
     );
 }

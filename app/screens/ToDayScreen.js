@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Button, FlatList, Modal, Pressable, TouchableHighlight, TouchableOpacity, SafeAreaView, ImageBackground } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectTask, setDone, sortByPriority, deleteTask } from '../redux/task';
+import { selectTask, setDone, sortByPriority, deleteTask, editTask } from '../redux/task';
 import Task from '../components/Task';
 import { SIZES } from '../constants/data';
 import IconFeather from "react-native-vector-icons/Feather";
@@ -18,7 +18,17 @@ const ToDayScreen = () => {
     const task = useSelector(selectTask);
     const dispatch = useDispatch();
     const [modalVisible, setModalVisible] = useState(false);
-    var lastID = task.length != 0 ? task[task.length - 1].id + 1 : 1;
+    //Get last id
+    var lastID = 1;
+    if (task.length != 0) {
+        for (let index = 0; index < task.length; index++) {
+            const element = task[index];
+            if(lastID < element.id){
+                lastID = element.id;
+            }
+        }
+        lastID++;
+    }
     const [isAddNew, setIsAddNew] = useState(true);
     const [itemSelected, setItemSelected] = useState(null);
 
@@ -72,7 +82,7 @@ const ToDayScreen = () => {
     const close = () => {
         setModalVisible(false);
     }
-    console.log("hello");
+    //console.log("hello");
     return (
         <View style={styles.container}>
             <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -108,9 +118,6 @@ const ToDayScreen = () => {
                         </TouchableOpacity>
                     </View>
                     <AddEditTask type={isAddNew ? "add" : "edit"} item={isAddNew ? lastID : itemSelected} closeModal={close}
-                        add={() => {
-                            setTotalTask(totalTask + 1);
-                        }}
                     />
                 </View>
             </Modal>
@@ -152,7 +159,7 @@ const ToDayScreen = () => {
                 </View>
             </ImageBackground>
             <FlatList
-                keyExtractor={(item) => item.name}
+                keyExtractor={(item) => item.id}
                 data={task}
                 renderItem={({ item }) => {
                     const date = new Date(item.dueDate);
@@ -162,21 +169,27 @@ const ToDayScreen = () => {
                             setItemSelected(item);
                             setModalVisible(true);
                         }
+                        const setDoneTask = () => {
+                            dispatch(editTask(item))
+                        }
                         return (
-                            <Task item={item}
-                                done={item.done}
-                                editItem={edit}
-                                resetNumberOfTaskDoneBySetDone={(value) => {
-                                    setNumberOfTaskDone(numberOfTaskDone + value);
-                                }}
-                                resetNumberOfTaskDoneByDel={(isDone) => {
-                                    setTotalTask(totalTask - 1);
-                                    if (isDone) {
-                                        setNumberOfTaskDone(numberOfTaskDone - 1);
-                                    }
-                                }}
-                            // deleteTask={del} 
-                            />
+                            <View>
+                                    <Task item={item}
+                                        done={item.done}
+                                        editItem={edit}
+                                        setDoneFunc={setDoneTask}
+                                    // resetNumberOfTaskDoneBySetDone={(value) => {
+                                    //     setNumberOfTaskDone(numberOfTaskDone + value);
+                                    // }}
+                                    // resetNumberOfTaskDoneByDel={(isDone) => {
+                                    //     setTotalTask(totalTask - 1);
+                                    //     if (isDone) {
+                                    //         setNumberOfTaskDone(numberOfTaskDone - 1);
+                                    //     }
+                                    // }}
+                                    // deleteTask={del} 
+                                    />
+                            </View>
                         );
                     }
                 }}
@@ -184,7 +197,6 @@ const ToDayScreen = () => {
             <StatusBar
                 style="light"
                 backgroundColor='#011020'
-                bar
             />
             <TouchableOpacity style={styles.add} onPress={() => {
                 setIsAddNew(true);
@@ -250,6 +262,10 @@ const styles = StyleSheet.create({
     },
     statisticalTask: {
         color: "white"
-    }
+    },
+    check: {
+        flex: 1,
+        alignSelf: "center"
+    },
 });
 export default ToDayScreen;

@@ -82,7 +82,12 @@ const UserScreen = () => {
                 height={220}
                 chartConfig={chartConfig}
             />
-            <StatusBar style="auto" />
+            <StatusBar style="dark" backgroundColor='white'/>
+            <Text style={{
+                fontSize: 20
+            }}>
+            Task completion chart
+            </Text>
         </View>
     );
 }

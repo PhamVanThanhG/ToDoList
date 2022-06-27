@@ -65,9 +65,11 @@ export const taskSlice = createSlice({
             //         element.tasks[0].done = !element.tasks[0].done;
             //     }
             // }
+            id = action.payload;
+            //console.log(id);
             for (let index = 0; index < state.value.length; index++) {
                 const element = state.value[index];
-                if (element.id == action.payload) {
+                if (element.id == id) {
                     var done = element.done;
                     element.done = !done;
                     break;
@@ -101,6 +103,7 @@ export const taskSlice = createSlice({
                     element.description = item.description;
                     element.priority = item.priority;
                     element.dueDate = item.dueDate;
+                    element.done = item.done;
                     break;
                 }
             }
