@@ -23,21 +23,18 @@ const TaskManagementScreen = () => {
     const [isAddNew, setIsAddNew] = useState(true);
     const [itemSelected, setItemSelected] = useState(null);
 
-    const getToDayTasks = (tasks) => {
-        var result = new Array();
-        var d = new Date();
-        for (let index = 0; index < tasks.length; index++) {
-            const element = tasks[index];
-            const date = new Date(element.dueDate);
-            if (date.getFullYear() === d.getFullYear() && date.getMonth() === d.getMonth() && date.getDate() === d.getDate()) {
-                result.push(element);
-            }
-        }
-        return result;
-    }
-
+    ///METHOD
+    //close add and edit task
     const close = () => {
         setModalVisible(false);
+    }
+    const edit = () => {
+        setIsAddNew(false);
+        setItemSelected(item);
+        setModalVisible(true);
+    }
+    const setDoneTask = () => {
+        dispatch(editTask(item))
     }
     return (
         <View style={styles.container}>
@@ -101,14 +98,6 @@ const TaskManagementScreen = () => {
                     // const resetDonePer = (task) => {
                     //     getDonePercentToDayTask(task, false, false);
                     // }
-                    const edit = () => {
-                        setIsAddNew(false);
-                        setItemSelected(item);
-                        setModalVisible(true);
-                    }
-                    const setDoneTask = () => {
-                        dispatch(editTask(item))
-                    }
                     return (
                         <Task item={item}
                             done={item.done}
